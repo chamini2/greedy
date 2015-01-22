@@ -116,7 +116,6 @@ int main(int argc, char const *argv[]) {
 
     scanf("%d", &cases);
 
-
     for (int cas = 1; cas <= cases; ++cas) {
 
         scanf("%d %d %d %d %d", &N, &R, &M, &U, &V);
@@ -151,6 +150,7 @@ int main(int argc, char const *argv[]) {
                     edg._length);
         }*/
 
+        // Kruskal's algorithm
         int networks = N;
         double cheap = 0, expensive = 0;
         for (auto edg : edges) {
