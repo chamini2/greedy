@@ -7,15 +7,15 @@
 // Problem variables
 int N, M, R, U, V;
 
-class disjoint_sets {
+class DisjointSets {
 public:
     std::vector<int> _representatives;
     std::vector<int> _ranks;
     int _length;
 
-    disjoint_sets() {}
+    DisjointSets() {}
 
-    disjoint_sets(int size) {
+    DisjointSets(int size) {
         this->reserve(size);
     }
 
@@ -111,7 +111,7 @@ int main(int argc, char const *argv[]) {
     int cases;
     std::vector<Office> offices;
     std::vector<Edge> edges;
-    disjoint_sets components;
+    DisjointSets components;
     int x, y;
 
     scanf("%d", &cases);
