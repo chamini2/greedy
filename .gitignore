@@ -26,3 +26,6 @@
 *.exe
 *.out
 *.app
+
+#vim 
+.ycm_extra_conf.py
