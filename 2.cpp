@@ -15,7 +15,7 @@ typedef std::pair<std::string, int> Query;
 // that is used to check whether the edge is in the graph or not
 class Edge {
     public:
-        Edge() {}
+        Edge();
         Edge(int,int); 
         int first_, second_;
         bool removed() { return removed_; }
@@ -23,6 +23,12 @@ class Edge {
     private: 
         bool removed_; 
 };
+
+Edge::Edge() {
+    first_   = -1;
+    second_  = -1;
+    removed_ = false;
+}
 
 Edge::Edge(int first, int second) {
     first_   = first;
@@ -39,7 +45,7 @@ Edge::Edge(int first, int second) {
 class DisjointSets {
     public:
         DisjointSets();
-        ~DisjointSets() {}
+        ~DisjointSets();
         DisjointSets(int size); 
         void unify(int,int); 
         int find(int); 
@@ -52,7 +58,7 @@ class DisjointSets {
         // Function: countPairs()
         // This a function that will count the number of 
         // pair of nodes that are not connected in the graph
-        int countPairs(); 
+        unsigned long long countPairs(); 
     private: 
         std::vector<int> representatives_;
         std::vector<int> ranks_;
@@ -76,6 +82,10 @@ DisjointSets::DisjointSets(int size) {
 
 }
 
+DisjointSets::~DisjointSets() {
+}
+
+
 int DisjointSets::find(int id) {
     // id between 1 and size + 1 to handle 1-indexed edges
     if (1 <= id && id < size_ + 1) {
@@ -91,10 +101,9 @@ int DisjointSets::find(int id) {
 }
 
 void DisjointSets::unify(int a, int b) {
-    int arep, brep;
 
-    arep = this->find(a);
-    brep = this->find(b);
+    int arep = this->find(a);
+    int brep = this->find(b);
 
     if (arep == -1 || brep == -1)
         return; 
@@ -120,7 +129,7 @@ void DisjointSets::unify(int a, int b) {
     }
 }
 
-int DisjointSets::countPairs() {
+unsigned long long DisjointSets::countPairs() {
 
     std::vector<int> sortedSizes(sizes_); 
 
@@ -130,7 +139,7 @@ int DisjointSets::countPairs() {
 
     // Number of disconnected pairs is defined by
     // SUM ( PROD ( A[i], A[j] ) ) for 0 <= i <= components_ and i + 1 <= j <= components_
-    int pairs = 0; 
+    unsigned long long pairs = 0; 
     for (int i = 0;  i < components_; ++i) {
         for (int j = i + 1; j < components_; ++j) {
             pairs += sortedSizes[i] * sortedSizes[j]; 
@@ -152,29 +161,31 @@ int DisjointSets::countPairs() {
 //      if there's a 'R x' query -> 
 //          it unifies the vertex in edge[x].
 // 3 -> Finally, it pops each elem in 'pairs' and print it
-void disconnectedOffices(std::vector<Edge> edges, std::vector<Query> queries) {
+void disconnectedOffices(std::vector<Edge>& edges, std::vector<Query>& queries) {
 
+    int nVertex = edges.size(); 
     // Graph without edges (separated components)
-    DisjointSets components(edges.size()); 
+    DisjointSets components(nVertex); 
+    std::stack<unsigned long long> pairs; 
 
     // Label removed edges in order to 
     // ignore them in the graph unification
     for (auto query : queries) {
-        if (query.first == "R") {
+        if (query.first == "R" && 
+                query.second > 0 &&
+                query.second < nVertex) {
             edges[query.second].remove(); 
         }
     }
     // Unify not labeled edges
     int N = edges.size(); 
-    for (int i = 1; i < N; ++i) {
-        Edge& edge = edges[i]; 
+    for (auto edge : edges) {
         if (!edge.removed()) {
             components.unify(edge.first_, edge.second_); 
         }
     }
 
     N = queries.size();
-    std::stack<int> pairs; 
 
     // Going backwards on the queries
     for (int i = N - 1; i >= 0; --i) {
@@ -207,7 +218,7 @@ int main() {
         edges.reserve(N - 1);
 
         // Handling 1-indexed edges
-        edges.push_back(Edge(-1, -1)); 
+        edges.push_back(Edge()); 
 
         // Push edges in vector
         for (int i = 0; i < N - 1; ++i) {
@@ -240,4 +251,6 @@ int main() {
         disconnectedOffices(edges, queries); 
         if (cases > 1) std::cout << std::endl; // endline
     }
+
+    return 0; 
 }
