@@ -14,10 +14,10 @@ public:
         _sizes.reserve(size);
         _length = size;
 
-        this.clean();
+        this->clear();
     }
 
-    void clean() {
+    void clear() {
         for (int i = 0; i < size; ++i) {
             _representatives[i] = i;
             _ranks[i] = 0;
@@ -28,8 +28,8 @@ public:
     void union(int a, int b) {
         int arep, brep;
 
-        arep = this.find(a);
-        brep = this.find(b);
+        arep = this->find(a);
+        brep = this->find(b);
 
         // If they are on different disjoint sets
         if (arep != brep) {
@@ -54,7 +54,7 @@ public:
             if (_representatives[id] == id) {
                 return id;
             } else {
-                _representatives[id] = this.find(_representatives[id]);
+                _representatives[id] = this->find(_representatives[id]);
                 return _representatives[id];
             }
         }
