@@ -34,7 +34,7 @@ public:
         this->clear();
     }
 
-    void unite(int a, int b) {
+    void unify(int a, int b) {
         int arep, brep;
 
         arep = this->find(a);
@@ -156,7 +156,7 @@ int main(int argc, char const *argv[]) {
         for (auto edg : edges) {
             if (components.find(edg._first._label) != components.find(edg._second._label)) {
             // if they are not in the same component
-                components.unite(edg._first._label, edg._second._label);
+                components.unify(edg._first._label, edg._second._label);
 
                 if (edg._length > R) {
                     expensive += edg._length * V;
