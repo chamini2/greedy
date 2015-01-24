@@ -1,4 +1,6 @@
 #include <vector>
+#include <algorithm>
+#include <stdio.h>
 
 typedef std::pair<int, int> period_pair;
 

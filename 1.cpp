@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <algorithm>
 #include <queue>
 #include <math.h>
 
 // Problem variables
 int N, M, R, U, V;
 
-class disjoint_sets {
+class DisjointSets {
 public:
     std::vector<int> _representatives;
     std::vector<int> _ranks;
     int _length;
 
-    disjoint_sets() {}
+    DisjointSets() {}
 
-    disjoint_sets(int size) {
+    DisjointSets(int size) {
         this->reserve(size);
     }
 
@@ -34,7 +35,7 @@ public:
         this->clear();
     }
 
-    void unite(int a, int b) {
+    void unify(int a, int b) {
         int arep, brep;
 
         arep = this->find(a);
@@ -111,8 +112,8 @@ int main(int argc, char const *argv[]) {
     int cases;
     std::vector<Office> offices;
     std::vector<Edge> edges;
-    disjoint_sets components;
-    int x, y;
+    DisjointSets components;
+    long long x, y;
 
     scanf("%d", &cases);
 
@@ -129,7 +130,7 @@ int main(int argc, char const *argv[]) {
 
         // read the offices coordinates
         for (int off = 0; off < N; ++off) {
-            scanf("%d %d", &x, &y);
+            scanf("%lld %lld", &x, &y);
             offices.push_back(Office(x,y));
         }
 
@@ -153,10 +154,11 @@ int main(int argc, char const *argv[]) {
         // Kruskal's algorithm
         int networks = N;
         double cheap = 0, expensive = 0;
-        for (auto edg : edges) {
+        for (int i = 0; i < edges.size(); ++i) {
+            Edge edg = edges[i];
             if (components.find(edg._first._label) != components.find(edg._second._label)) {
             // if they are not in the same component
-                components.unite(edg._first._label, edg._second._label);
+                components.unify(edg._first._label, edg._second._label);
 
                 if (edg._length > R) {
                     expensive += edg._length * V;
