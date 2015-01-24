@@ -53,18 +53,12 @@ class DisjointSets {
         std::vector<int> ranks() { return ranks_; }
         std::vector<int> sizes() { return sizes_; }
         int size() { return size_; }
-        int components() { return components_; }
 
-        // Function: countPairs()
-        // This a function that will count the number of 
-        // pair of nodes that are not connected in the graph
-        unsigned long long countPairs(); 
     private: 
         std::vector<int> representatives_;
         std::vector<int> ranks_;
         std::vector<int> sizes_; // Size of each component in the graph. 
                                  // Component represented by 'i' will have its size in sizes_[i].
-        int components_;         // Current number of components
         int size_;               // Number of vertex in the graph
 };
 
@@ -78,7 +72,6 @@ DisjointSets::DisjointSets(int size) {
 
     }
     size_       = size;
-    components_ = size;
 
 }
 
@@ -123,31 +116,9 @@ void DisjointSets::unify(int a, int b) {
             sizes_[brep] += sizes_[arep];
             ++ranks_[brep];
         }
-
-        // Every unification decreases the number of components
-        --components_;
     }
 }
 
-unsigned long long DisjointSets::countPairs() {
-
-    std::vector<int> sortedSizes(sizes_); 
-
-    // Sorting the array of sizes so we ensure that in the first
-    // components_ positions we will have all the components sizes 
-    std::sort(sortedSizes.begin(), sortedSizes.end(), std::greater<int>()); 
-
-    // Number of disconnected pairs is defined by
-    // SUM ( PROD ( A[i], A[j] ) ) for 0 <= i <= components_ and i + 1 <= j <= components_
-    unsigned long long pairs = 0; 
-    for (int i = 0;  i < components_; ++i) {
-        for (int j = i + 1; j < components_; ++j) {
-            pairs += sortedSizes[i] * sortedSizes[j]; 
-        }
-    }
-
-    return pairs; 
-}
 
 // Function: disconnectedOffices
 // Arguments: edges : vector of Edge, queries: vector of Query
