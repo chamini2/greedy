@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <algorithm>
 #include <queue>
 #include <math.h>
 
@@ -112,7 +113,7 @@ int main(int argc, char const *argv[]) {
     std::vector<Office> offices;
     std::vector<Edge> edges;
     DisjointSets components;
-    int x, y;
+    long long x, y;
 
     scanf("%d", &cases);
 
@@ -129,7 +130,7 @@ int main(int argc, char const *argv[]) {
 
         // read the offices coordinates
         for (int off = 0; off < N; ++off) {
-            scanf("%d %d", &x, &y);
+            scanf("%lld %lld", &x, &y);
             offices.push_back(Office(x,y));
         }
 
@@ -153,7 +154,8 @@ int main(int argc, char const *argv[]) {
         // Kruskal's algorithm
         int networks = N;
         double cheap = 0, expensive = 0;
-        for (auto edg : edges) {
+        for (int i = 0; i < edges.size(); ++i) {
+            Edge edg = edges[i];
             if (components.find(edg._first._label) != components.find(edg._second._label)) {
             // if they are not in the same component
                 components.unify(edg._first._label, edg._second._label);
