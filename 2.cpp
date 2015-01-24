@@ -161,7 +161,7 @@ unsigned long long DisjointSets::countPairs() {
 //      if there's a 'R x' query -> 
 //          it unifies the vertex in edge[x].
 // 3 -> Finally, it pops each elem in 'pairs' and print it
-void disconnectedOffices(std::vector<Edge>& edges, std::vector<Query>& queries) {
+void disconnectedOffices(std::vector<Edge>& edges, std::stack<Query>& queries) {
 
     int nVertex = edges.size(); 
     // Graph without edges (separated components)
@@ -190,12 +190,14 @@ void disconnectedOffices(std::vector<Edge>& edges, std::vector<Query>& queries) 
 
     // Going backwards on the queries
     for (int i = N - 1; i >= 0; --i) {
+        Query& query = queries.top(); 
+        queries.pop(); 
         // If there's a 'show' query, we count the pairs and push into the results
-        if (queries[i].first == 'Q') {
+        if (query.first == 'Q') {
             pairs.push(nPairs); 
         // If it's a remove query, unify the removed edges
         } else {
-            Edge& edge = edges[queries[i].second]; 
+            Edge& edge = edges[query.second]; 
 
             frep = components.find(edge.first_); 
             srep = components.find(edge.second_); 
@@ -240,12 +242,10 @@ int main() {
         }
 
         int M, vertex;
-        std::vector<Query> queries;
+        std::stack<Query> queries;
         char query;
 
         scanf("%d", &M); 
-
-        queries.reserve(M); 
 
         // Push queries in vector
         for (; M > 0; --M) {
@@ -260,7 +260,7 @@ int main() {
             //printf("%c %d\n", query, vertex); 
 
 
-            queries.push_back(std::make_pair(query, vertex)); 
+            queries.push(std::make_pair(query, vertex)); 
         }
 
 
