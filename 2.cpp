@@ -1,12 +1,12 @@
-#include<iostream>
-#include<algorithm> // std::sort
-#include<vector>
-#include<stack>
+#include <stdio.h>
+#include <algorithm> // std::sort
+#include <vector>
+#include <stack>
 
 
 // We will user a pair for the queries:
 // (R, x) and (Q, -1) where the -1 is ignored
-typedef std::pair<std::string, int> Query; 
+typedef std::pair<char, int> Query; 
 
 // Class Edge
 // Members: first_, second_, removed_
@@ -167,41 +167,52 @@ void disconnectedOffices(std::vector<Edge>& edges, std::vector<Query>& queries) 
     // Graph without edges (separated components)
     DisjointSets components(nVertex); 
     std::stack<unsigned long long> pairs; 
+    int frep, srep; 
 
-    // Label removed edges in order to 
-    // ignore them in the graph unification
-    for (auto query : queries) {
-        if (query.first == "R" && 
-                query.second > 0 &&
-                query.second < nVertex) {
-            edges[query.second].remove(); 
-        }
-    }
+
+    unsigned long long nPairs = (nVertex * (nVertex - 1)) / 2;
+
     // Unify not labeled edges
-    int N = edges.size(); 
     for (auto edge : edges) {
         if (!edge.removed()) {
+            frep = components.find(edge.first_); 
+            srep = components.find(edge.second_); 
+
+            if (frep == srep) {
+                continue; 
+            }
+            nPairs -= components.sizes()[frep] * components.sizes()[srep]; 
             components.unify(edge.first_, edge.second_); 
         }
     }
 
-    N = queries.size();
+    int N = queries.size();
 
     // Going backwards on the queries
     for (int i = N - 1; i >= 0; --i) {
         // If there's a 'show' query, we count the pairs and push into the results
-        if (queries[i].first == "Q") {
-            pairs.push(components.countPairs()); 
+        if (queries[i].first == 'Q') {
+            pairs.push(nPairs); 
         // If it's a remove query, unify the removed edges
         } else {
             Edge& edge = edges[queries[i].second]; 
+
+            frep = components.find(edge.first_); 
+            srep = components.find(edge.second_); 
+
+            if (frep == srep) {
+                continue; 
+            }
+
+            nPairs -= components.sizes()[frep] * components.sizes()[srep]; 
             components.unify(edge.first_, edge.second_); 
         }
+
     }
 
     // Print number of pairs in the right order
     while (!pairs.empty()) {
-        std::cout << pairs.top() << std::endl;
+        printf("%llu\n", pairs.top()); 
         pairs.pop(); 
     }
 }
@@ -209,10 +220,10 @@ void disconnectedOffices(std::vector<Edge>& edges, std::vector<Query>& queries) 
 int main() {
     int cases;
 
-    std::cin >> cases;
+    scanf("%d", &cases); 
     for (; cases > 0; --cases) {
         int N;
-        std::cin >> N;
+        scanf("%d", &N); 
 
         std::vector<Edge> edges;
         edges.reserve(N - 1);
@@ -223,33 +234,40 @@ int main() {
         // Push edges in vector
         for (int i = 0; i < N - 1; ++i) {
             int first, second;
-            std::cin >> first;
-            std::cin >> second; 
+            scanf("%d %d", &first, &second);
+            //printf("%d %d\n", first, second);
             edges.push_back(Edge(first, second)); 
         }
 
         int M, vertex;
         std::vector<Query> queries;
-        std::string query;
+        char query;
 
-        std::cin >> M;
+        scanf("%d", &M); 
 
         queries.reserve(M); 
 
         // Push queries in vector
         for (; M > 0; --M) {
-            std::cin >> query;
+            scanf(" %c", &query); 
             // Queries 'Q' will have vertex = -1
             vertex = -1; 
             // Queries 'R x' will have vertex = x
-            if (query == "R") std::cin >> vertex;
+            if (query == 'R') {
+                scanf("%d", &vertex); 
+                edges[vertex].remove(); 
+            }
+            //printf("%c %d\n", query, vertex); 
+
 
             queries.push_back(std::make_pair(query, vertex)); 
         }
 
+
+
         // Print number of paris disconnected
         disconnectedOffices(edges, queries); 
-        if (cases > 1) std::cout << std::endl; // endline
+        if (cases > 1) printf("\n"); // endline
     }
 
     return 0; 
