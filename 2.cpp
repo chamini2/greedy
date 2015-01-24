@@ -127,8 +127,9 @@ void DisjointSets::unify(int a, int b) {
 // 2 -> Going backwards in queries: 
 //      if there's a 'Q' query -> 
 //          it pushes the number of pairs disconnected 
-//          in the current graph (using countPairs()) to 
-//          a stack 'pairs'
+//          by removing the size(A)*size(B) from the last number of pairs 
+//          being A and B the two components that are being unified
+//          to the stack 'pairs'
 //      if there's a 'R x' query -> 
 //          it unifies the vertex in edge[x].
 // 3 -> Finally, it pops each elem in 'pairs' and print it
